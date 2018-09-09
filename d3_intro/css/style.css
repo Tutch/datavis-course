@@ -21,6 +21,10 @@ h3 {
     font-weight: 600;
 }
 
+h3 span {
+    font-size: 0.7em;
+}
+
 .bar span {
     margin-left: 10px;
     font-size: 0.8em;
