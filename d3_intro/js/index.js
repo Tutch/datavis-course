@@ -72,7 +72,6 @@ const render = (data, graph_selector, field, options={}) => {
         })
         .select('span')
             .text(function (d) {
-                console.log(d);
                 return d[label];
             });
 
@@ -107,10 +106,7 @@ d3.json('data/movies.json').then((json) => {
     render(json, '#rentability_graph', rentabilityCalc, 
         {bar_color: 'lightgreen', factor: 0.5, sortFunc: sortByFieldDesc}
     );
-   
-    let aggregateData = aggregateGenre(json);
-    console.log(aggregateData);
-    render(aggregateData, '#gross_genre_graph', GROSS, 
+    render(aggregateGenre(json), '#gross_genre_graph', GROSS, 
         {labelBy:'Genre', bar_color: 'lightpink', factor:0.1, sortFunc: sortByFieldDesc}
     );
 });
