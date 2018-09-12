@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Scatterplot</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+<div id="chart"></div>
+<script type="text/javascript">
+    let w = 500;
+    let h = 100;
+    let dataset = [
+            [5, 20], [480, 90], [250, 50],
+            [100, 33], [330, 95], [410, 12], 
+            [475, 44], [25, 67], [85, 21],
+            [220, 88] ]; 
+
+    // Escalas
+    const createScale = (dataset, index, minmax, inverted) => {
+        let range = inverted ? [minmax[1], minmax[0]] : [minmax[0], minmax[1]];
+        console.log(range);
+
+        return d3.scaleLinear()
+                   .domain([minmax[0], d3.max(dataset, (d) => { 
+                                                    return d[index];
+                                                })
+                   ])
+                   .range(range);
+    }
+
+    let xScale = createScale(dataset, 0, [0,w], false);
+    let yScale = createScale(dataset, 1, [0,h], true);
+
+    // Crie o elemento svg
+    let svg = d3.select('#chart')
+                .append('svg')
+                .attr('width', w)
+                .attr('height', h)
+
+    // Depois adicione os elementos círculos
+    svg.selectAll('circle')
+            .data(dataset)
+            .enter()
+            .append('circle')
+            .attr('cx', (d) => {
+                return xScale(d[0]);
+            })
+            .attr('cy', (d) => {
+                return yScale(d[1]);
+            })
+            .attr('r', 5);
+
+    // Depois adicione os labels
+    svg.selectAll('text')
+            .data(dataset)
+            .enter()
+            .append('text')
+            .attr('x', (d) => {
+                return xScale(d[0]);
+            })    
+            .attr('y', (d) => {
+                return yScale(d[1]);
+            })
+            .attr('font-family', 'sans-serif')
+            .attr('font-size', '11px')
+            .attr('fill', 'red')
+            .text((d) => {
+                return `${d[0]},${d[1]}`;
+            })
+
+</script>
+</body>
+</html>
