@@ -1,0 +1,23 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    padding: 2%;
+    margin: 0px;
+}
+
+text {
+    font-weight: 600;
+    font-size: 11px;
+    fill: black;
+}
+
+circle {
+    fill: lightblue;
+}
+
+h3 {
+    font-weight: 600;
+}
+
+h3 span {
+    font-size: 0.7em;
+}
