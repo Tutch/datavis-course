@@ -7,7 +7,9 @@
 </head>
 
 <body>
+<p> O gráfico possui <span id='number'></span> pontos.</p>
 <div id='chart'></div>
+<button id='clique'>Novos Dados</button>
 <script type='text/javascript'>
     // Primeiro definimos o objeto margin
     let margin = {top: 50, right: 50, bottom: 50, left: 50};
@@ -27,23 +29,28 @@
             .append('g')
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-    let dataset = [];
-    let numDataPoints = 50;
-    let xRange = Math.random() * 1000;
-    let yRange = Math.random() * 1000;
+    const generateRandomDataset = () => {
+        let dataset = [];
+        let numDataPoints = Math.ceil(Math.random() * 100);
+        let xRange = Math.random() * 1000;
+        let yRange = Math.random() * 1000;
 
-    for (let i=0; i < numDataPoints; i++) {
-        let newNumber1 = Math.floor(Math.random() * xRange);
-        let newNumber2 = Math.floor(Math.random() * yRange);
-        dataset.push([newNumber1, newNumber2]);
+        for (let i=0; i < numDataPoints; i++) {
+            let newNumber1 = Math.floor(Math.random() * xRange);
+            let newNumber2 = Math.floor(Math.random() * yRange);
+            dataset.push([newNumber1, newNumber2]);
+        }
+
+        return dataset;
     }
+
+    let dataset = generateRandomDataset();
 
     // Agora todo o código pode ignorar as margens. 
     // Copie aqui o código de criação das escalas do arquivo
     // anterior (vai continuar o mesmo)
     const createScale = (dataset, index, minmax, inverted) => {
         let range = inverted ? [minmax[1], minmax[0]] : [minmax[0], minmax[1]];
-        console.log(range);
 
         return d3.scaleLinear()
                    .domain([minmax[0], d3.max(dataset, (d) => { 
@@ -99,11 +106,10 @@
             })
     }
 
-    //addLabels();
-
     // Eixo X
     svg.append('g')
        .attr('transform', `translate(0,${h})`)
+       .attr('class', 'x axis')
        .call(xAxis);
 
     svg.append('text')
@@ -116,6 +122,7 @@
     // Eixo Y
     svg.append('g')
        .attr('transform', `translate(0,0)`)
+       .attr('class', 'y axis')
        .call(yAxis);
 
     svg.append('text')
@@ -127,6 +134,77 @@
        .attr('font-family', 'sans-serif')
        .attr('font-size', '12px')
        .text('Eixo Y');
+
+    d3.select('#clique')
+        .on('click', () => {
+            dataset = generateRandomDataset();
+
+            xScale.domain([0, d3.max(dataset, (d) => {
+                                    return d[0]; 
+                                })
+            ])
+
+            yScale.domain([0, d3.max(dataset, (d) => {
+                                    return d[1]; 
+                                })
+            ])
+            
+            svg.selectAll('circle')
+                .data(dataset)
+                .transition()
+                .delay((d,i) => {
+                    return i/dataset.length * 500;
+                })
+                .duration(500)
+                    .attr('cx', (d) => {
+                        return xScale(d[0]);
+                    })
+                    .attr('cy', (d) => {
+                        return yScale(d[1]);
+                    });
+            
+            svg.select('.x.axis')
+                .call(xAxis);
+
+            svg.select('.y.axis')
+                .call(yAxis);
+
+            d3.select('#number').text(dataset.length);
+
+            svg.selectAll('circle')
+                .data(dataset)
+                .exit()
+                .remove();
+
+            svg.selectAll('circle')
+                .data(dataset)
+                .enter()
+                .append('circle')
+                    .attr('cx', (d) => {
+                        return xScale(d[0]);
+                    })
+                    .attr('cy', (d) => {
+                        return yScale(d[1]);
+                    })
+                    .attr('r', 4);
+
+            svg.selectAll('circle')
+                .data(dataset)
+                .transition()
+                .delay((d,i) => {
+                    return i/dataset.length * 500;
+                })
+                .duration(500)
+                    .attr('cx', (d) => {
+                        return xScale(d[0]);
+                    })
+                    .attr('cy', (d) => {
+                        return yScale(d[1]);
+                    });
+            
+
+
+    });
 </script>
 </body>
 </html>

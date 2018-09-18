@@ -1,4 +1,4 @@
-# Index
+﻿# Index
 
 ## Dia 03/09/2018
 [index01.html](basic/index01.html)<br>
@@ -15,5 +15,8 @@
 ## Visualização de Filmes - Dia 10/09/2018
 [movies_d3.html](d3_intro/movies_d3.html)<br>
 
-## Scatterplot: Bilheteria x Orçamento - Dia 19/09/2018
+## Scatterplot: Bilheteria x Orçamento - Dia 17/09/2018
 [movies_scatter.html](d3_scale/movies_scatter.html)<br>
+
+## Scatterplot: Transições - Dia 17/09/2018
+[01_scatterplot.htlm](d3_update/01_scatterplot.htlm)<br>
