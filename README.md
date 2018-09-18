@@ -19,4 +19,4 @@
 [movies_scatter.html](d3_scale/movies_scatter.html)<br>
 
 ## Scatterplot: Transições - Dia 17/09/2018
-[01_scatterplot.htlm](d3_update/01_scatterplot.htlm)<br>
+[01_scatterplot.html](d3_update/01_scatterplot.html)<br>
