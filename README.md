@@ -20,3 +20,7 @@
 
 ## Scatterplot: Transições - Dia 17/09/2018
 [01_scatterplot.html](d3_update/01_scatterplot.html)<br>
+
+## Crossfilter - Dia 24/09/2018
+[acoes.html](d3_crossfilter/acoes.html)<br>
+[movies_d3_dc.html](d3_crossfilter/movies_d3_dc.html)<br>
