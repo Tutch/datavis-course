@@ -24,3 +24,6 @@
 ## Crossfilter - Dia 24/09/2018
 [acoes.html](d3_crossfilter/acoes.html)<br>
 [movies_d3_dc.html](d3_crossfilter/movies_d3_dc.html)<br>
+
+## Crossfilter: O Retorno - Dia 01/10/2018
+[earthquakes.html](d3_crossfilter_2/earthquakes.html)<br>
