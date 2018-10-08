@@ -27,3 +27,6 @@
 
 ## Crossfilter: O Retorno - Dia 01/10/2018
 [earthquakes.html](d3_crossfilter_2/earthquakes.html)<br>
+
+## Leaflet: O Retorno - Dia 08/10/2018
+[chicago.html](d3_leaflet/chicago.html)<br>

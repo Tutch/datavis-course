@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title> Earthquake Data</title>
+
+    <!-- Custom styles for this template -->
+	<link rel="stylesheet" href="css/dc.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/crossfilter.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="js/dc.min.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" 
+	      integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+		  crossorigin=""/>
+	<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+	        integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+		    crossorigin=""></script>
+</head>
+<body>
+	<main role="main" class="container">
+		<div class='row'>
+			<div class="col-12">
+				<div class="row">
+					<div id='mapid' class="col-6">
+					</div>
+					<div class="col-6">		
+						<h4>Total Crimes</h4>
+						<div id="barchart-crime">
+						</div>
+						<h4>Crimes over Time</h4>
+						<div id="series-crime">
+						</div>
+					</div>
+				</div>
+						
+			</div>
+		</div>
+	</main>
+	<script type="text/javascript">
+		d3.csv('data/chicago_crimes_sep_2018.csv').then(data => {
+			let UTCDate = d3.utcParse('%m/%d/%Y');
+			let barchart = dc.barChart('#barchart-crime');
+			let timechart = dc.seriesChart('#series-crime');
+
+			let map = L.map('mapid').setView([41.8430021,-87.7652862], 11);
+				L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href="Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.">OpenStreetMap</a> contributors',
+				maxZoom: 17
+			}).addTo(map);
+
+			// Run the data through crossfilter and load our 'facts'
+			let colors = [];
+			let crimes = [];
+
+			data.forEach(function(d){
+				d.crime_date = UTCDate(d.Date.substr(0,10));
+				if(!crimes.includes(d['Primary Type'])) {
+					crimes.push(d['Primary Type']);
+				}
+			});
+
+			let colorScale = d3.scaleOrdinal()
+					.domain(crimes)
+					.range(["#ca0020", "#0571b0", "#fdae61"]);
+
+			data.forEach(d => {
+				let c = colorScale(crimes.indexOf(d['Primary Type']));
+				let circle = L.circle([d.Latitude, d.Longitude], 200, {
+								color: c,
+								weight: 2,
+								fillColor: c,
+								fillOpacity: 0.5
+							}).addTo(map);
+
+				circle.bindPopup(`Crime: ${d['Primary Type']}<br>Class: ${d.Description}<br>Date: ${d.crime_date}`);
+			});
+
+			let facts = crossfilter(data);
+			
+			let crimeTypeDim = facts.dimension(d => {
+				return d['Primary Type'];
+			});
+
+			let timeDim = facts.dimension(d => {
+				return [d['Primary Type'], d.crime_date];
+			});
+
+			let crimeTypeGroup = crimeTypeDim.group().reduceCount();
+			let timeGroup = timeDim.group();
+
+			let crime_x = d3.scaleBand().domain(crimes);
+			barchart.width(480)
+					.height(150)
+					.gap(65)	
+					.group(crimeTypeGroup)
+					.dimension(crimeTypeDim)
+					.x(crime_x)
+					.xUnits(dc.units.ordinal)
+					.colors(colorScale)
+					.colorAccessor(d => {
+						return crimes.indexOf(d.key);
+					})
+					.brushOn(false)
+					.elasticY(true);
+
+			let time_x = d3.scaleTime().domain([timeDim.bottom(1)[0].crime_date, timeDim.top(1)[0].crime_date]);
+			timechart.width(480)
+					 .height(150)
+					 .brushOn(false)
+				     .elasticY(true)
+					 .group(timeGroup)
+					 .dimension(timeDim)
+					 .x(time_x)					 
+					 .keyAccessor(d => {
+					   return d.key[1];
+					 })
+				     .seriesAccessor(d => {
+					   return d.key[0];
+					 })
+					 .valueAccessor(d => {
+						return d.value;
+					 })			
+					 .colors(colorScale)
+					 .colorAccessor(d => {
+						return crimes.indexOf(d.key);
+					 });
+
+			dc.renderAll();
+		});
+	</script>
+	 <!-- Bootstrap javascript files -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+</html>
