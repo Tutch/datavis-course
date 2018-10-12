@@ -30,3 +30,7 @@
 
 ## Leaflet: O Retorno - Dia 08/10/2018
 [chicago.html](d3_leaflet/chicago.html)<br>
+
+## Network Trees - Dia 10/10/2018
+[songs.html](d3_network_trees/songs.html)<br>
+[lesmiserables.html](d3_network_trees/lesmiserables.html)<br>
