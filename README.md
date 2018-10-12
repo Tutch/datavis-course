@@ -32,5 +32,5 @@
 [chicago.html](d3_leaflet/chicago.html)<br>
 
 ## Network Trees - Dia 10/10/2018
-[songs.html](d3_network_trees/songs.html)<br>
-[lesmiserables.html](d3_network_trees/lesmiserables.html)<br>
+[songs.html](d3_networks_trees/songs.html)<br>
+[lesmiserables.html](d3_networks_trees/lesmiserables.html)<br>
